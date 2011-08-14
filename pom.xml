@@ -1,0 +1,96 @@
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+
+  <modelVersion>4.0.0</modelVersion>
+
+  <parent>
+    <groupId>org.sonatype.spice</groupId>
+    <artifactId>spice-parent</artifactId>
+    <version>17</version>
+  </parent>
+
+  <groupId>org.sonatype.sisu</groupId>
+  <artifactId>sisu-charger</artifactId>
+  <version>1.0-SNAPSHOT</version>
+
+  <name>SISU Charger Component</name>
+
+  <scm>
+    <url>https://github.com/sonatype/sisu-charger</url>
+    <connection>scm:git:git://github.com/sonatype/sisu-charger.git</connection>
+    <developerConnection>scm:git:git@github.com:sonatype/sisu-charger.git</developerConnection>
+  </scm>
+
+  <dependencies>
+
+    <!-- Guava used -->
+    <dependency>
+      <groupId>com.google.guava</groupId>
+      <artifactId>guava</artifactId>
+      <version>r09</version>
+      <scope>compile</scope>
+      <type>jar</type>
+    </dependency>
+
+    <!-- Shiro (as optional) -->
+    <dependency>
+      <groupId>org.apache.shiro</groupId>
+      <artifactId>shiro-core</artifactId>
+      <version>1.1.0</version>
+      <scope>compile</scope>
+      <optional>true</optional>
+    </dependency>
+
+    <!-- SISU -->
+    <dependency>
+      <groupId>org.sonatype.sisu</groupId>
+      <artifactId>sisu-inject-bean</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>org.sonatype.sisu</groupId>
+      <artifactId>sisu-guice</artifactId>
+      <classifier>no_aop</classifier>
+    </dependency>
+    <dependency>
+      <groupId>javax.inject</groupId>
+      <artifactId>javax.inject</artifactId>
+    </dependency>
+
+    <!-- logging -->
+    <dependency>
+      <groupId>org.slf4j</groupId>
+      <artifactId>slf4j-api</artifactId>
+    </dependency>
+
+    <!-- Test -->
+    <dependency>
+      <groupId>junit</groupId>
+      <artifactId>junit</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>org.slf4j</groupId>
+      <artifactId>slf4j-simple</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>org.hamcrest</groupId>
+      <artifactId>hamcrest-core</artifactId>
+      <version>1.3.RC2</version>
+      <scope>test</scope>
+    </dependency>
+
+  </dependencies>
+
+  <build>
+    <plugins>
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-compiler-plugin</artifactId>
+        <configuration>
+          <source>1.6</source>
+          <target>1.6</target>
+        </configuration>
+      </plugin>
+    </plugins>
+
+  </build>
+</project>
