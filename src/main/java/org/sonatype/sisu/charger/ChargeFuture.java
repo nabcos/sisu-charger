@@ -10,7 +10,13 @@ import java.util.List;
  */
 public interface ChargeFuture<E>
 {
-    boolean cancel();
+    /**
+     * Cancels the Charge.
+     * 
+     * @param mayInterruptIfRunning
+     * @return
+     */
+    boolean cancel( boolean mayInterruptIfRunning );
 
     /**
      * Returns true if charge "is done with work" according to it's strategy (does not mean all the Ammunition is

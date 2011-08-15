@@ -53,7 +53,7 @@ public class Charge<E>
         }
     }
 
-    public boolean cancel()
+    public boolean cancel( final boolean mayInterruptIfRunning )
     {
         if ( isDone() )
         {
@@ -63,7 +63,7 @@ public class Charge<E>
         {
             for ( ChargeWrapperFuture<E> future : ammunitionFutures )
             {
-                future.cancel( false );
+                future.cancel( mayInterruptIfRunning );
             }
 
             return true;

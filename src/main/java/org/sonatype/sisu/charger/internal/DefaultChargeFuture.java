@@ -27,9 +27,9 @@ public class DefaultChargeFuture<E>
      * 
      * @return
      */
-    public boolean cancel()
+    public boolean cancel( final boolean mayInterruptIfRunning )
     {
-        return charge.cancel();
+        return charge.cancel( mayInterruptIfRunning );
     }
 
     /**
