@@ -65,7 +65,8 @@
     <!-- Test -->
     <dependency>
       <groupId>junit</groupId>
-      <artifactId>junit</artifactId>
+      <artifactId>junit-dep</artifactId>
+      <version>4.8.2</version>
     </dependency>
     <dependency>
       <groupId>org.slf4j</groupId>
