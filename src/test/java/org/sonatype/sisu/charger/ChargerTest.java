@@ -418,7 +418,7 @@ public class ChargerTest
         final long runtime = System.currentTimeMillis() - submitted;
         assertThat( result, Matchers.hasSize( 1 ) );
         assertThat( result, Matchers.hasItem( "hello Sneezy" ) );
-        assertThat( runtime, Matchers.lessThan( 1500 ) );
+        assertThat( runtime, Matchers.lessThan( 1500L ) );
     }
 
     @Test
