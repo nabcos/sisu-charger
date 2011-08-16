@@ -3,8 +3,8 @@ package org.sonatype.sisu.charger.internal;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.Callable;
-import java.util.concurrent.ExecutorService;
 
+import org.sonatype.sisu.charger.CallableExecutor;
 import org.sonatype.sisu.charger.ChargeStrategy;
 import org.sonatype.sisu.charger.ExceptionHandler;
 
@@ -45,11 +45,11 @@ public class Charge<E>
         return ammunitionFutures;
     }
 
-    public synchronized void exec( final ExecutorService service )
+    public synchronized void exec( final CallableExecutor runner )
     {
         for ( ChargeWrapper<E> ammo : ammunition )
         {
-            ammunitionFutures.add( new ChargeWrapperFuture<E>( ammo, service.submit( ammo ) ) );
+            ammunitionFutures.add( new ChargeWrapperFuture<E>( ammo, runner.submit( ammo ) ) );
         }
     }
 

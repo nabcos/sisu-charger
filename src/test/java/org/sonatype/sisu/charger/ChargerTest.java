@@ -18,6 +18,13 @@ import org.sonatype.sisu.charger.internal.FirstArrivedChargeStrategy;
 public class ChargerTest
     extends InjectedTestCase
 {
+    private final CallableExecutor executorServiceProvider;
+
+    public ChargerTest()
+    {
+        this.executorServiceProvider = new SimpleCallableExecutor();
+    }
+
     @Test
     public void testSimple()
         throws Exception
@@ -29,7 +36,8 @@ public class ChargerTest
         callables.add( new HelloCallable( "Jason" ) );
         callables.add( new HelloCallableWithExceptionHandler( "Brian" ) );
 
-        ChargeFuture<String> cf = charger.submit( callables, new AllArrivedChargeStrategy<String>() );
+        ChargeFuture<String> cf =
+            charger.submit( callables, new AllArrivedChargeStrategy<String>(), executorServiceProvider );
 
         final List<String> result = cf.getResult();
 
@@ -44,7 +52,8 @@ public class ChargerTest
 
         List<Callable<String>> callables = new ArrayList<Callable<String>>();
 
-        ChargeFuture<String> cf = charger.submit( callables, new AllArrivedChargeStrategy<String>() );
+        ChargeFuture<String> cf =
+            charger.submit( callables, new AllArrivedChargeStrategy<String>(), executorServiceProvider );
 
         final List<String> result = cf.getResult();
 
@@ -59,7 +68,8 @@ public class ChargerTest
 
         List<Callable<String>> callables = new ArrayList<Callable<String>>();
 
-        ChargeFuture<String> cf = charger.submit( callables, new FirstArrivedChargeStrategy<String>() );
+        ChargeFuture<String> cf =
+            charger.submit( callables, new FirstArrivedChargeStrategy<String>(), executorServiceProvider );
 
         final List<String> result = cf.getResult();
 
@@ -79,7 +89,8 @@ public class ChargerTest
         callables.add( new BailingOutCallable<String>( false ) );
         callables.add( new HelloCallableWithExceptionHandler( "Brian" ) );
 
-        ChargeFuture<String> cf = charger.submit( callables, new AllArrivedChargeStrategy<String>() );
+        ChargeFuture<String> cf =
+            charger.submit( callables, new AllArrivedChargeStrategy<String>(), executorServiceProvider );
 
         final List<String> result = cf.getResult();
 
@@ -99,7 +110,8 @@ public class ChargerTest
         callables.add( new BailingOutCallable<String>( false ) );
         callables.add( new HelloCallableWithExceptionHandler( "Brian" ) );
 
-        ChargeFuture<String> cf = charger.submit( callables, new AllArrivedChargeStrategy<String>() );
+        ChargeFuture<String> cf =
+            charger.submit( callables, new AllArrivedChargeStrategy<String>(), executorServiceProvider );
 
         try
         {
@@ -128,7 +140,8 @@ public class ChargerTest
         callables.add( new BailingOutCallable<String>( false ) );
         callables.add( new HelloCallableWithExceptionHandler( "Brian" ) );
 
-        ChargeFuture<String> cf = charger.submit( callables, new AllArrivedChargeStrategy<String>() );
+        ChargeFuture<String> cf =
+            charger.submit( callables, new AllArrivedChargeStrategy<String>(), executorServiceProvider );
 
         try
         {
@@ -160,7 +173,8 @@ public class ChargerTest
         callables.add( new FailingCallable<String>( new IOException( "I am not handled!" ) ) );
         callables.add( new HelloCallableWithExceptionHandler( "Brian" ) );
 
-        ChargeFuture<String> cf = charger.submit( callables, new AllArrivedChargeStrategy<String>() );
+        ChargeFuture<String> cf =
+            charger.submit( callables, new AllArrivedChargeStrategy<String>(), executorServiceProvider );
 
         try
         {
@@ -189,7 +203,8 @@ public class ChargerTest
         callables.add( new HelloCallableWithExceptionHandler( "Soldier" ) );
         callables.add( new HelloCallableWithExceptionHandler( "Sailor" ) );
 
-        ChargeFuture<String> cf = charger.submit( callables, new FirstArrivedChargeStrategy<String>() );
+        ChargeFuture<String> cf =
+            charger.submit( callables, new FirstArrivedChargeStrategy<String>(), executorServiceProvider );
 
         final List<String> result = cf.getResult();
 
@@ -218,7 +233,8 @@ public class ChargerTest
 
         final long submitted = System.currentTimeMillis();
 
-        ChargeFuture<String> cf = charger.submit( callables, new FirstArrivedChargeStrategy<String>() );
+        ChargeFuture<String> cf =
+            charger.submit( callables, new FirstArrivedChargeStrategy<String>(), executorServiceProvider );
 
         final List<String> result = cf.getResult();
 
@@ -251,7 +267,8 @@ public class ChargerTest
 
         final long submitted = System.currentTimeMillis();
 
-        ChargeFuture<String> cf = charger.submit( callables, new AllArrivedChargeStrategy<String>() );
+        ChargeFuture<String> cf =
+            charger.submit( callables, new AllArrivedChargeStrategy<String>(), executorServiceProvider );
 
         final List<String> result = cf.getResult();
 
@@ -283,8 +300,8 @@ public class ChargerTest
         // wait or ask them anything
         callables.add( new SleepingWrapperCallable<String>( 1500, new HelloCallableWithExceptionHandler( "Taylor" ) ) );
         callables.add( new SleepingWrapperCallable<String>( 1000, new HelloCallableWithExceptionHandler( "Soldier" ) ) );
-        callables.add( new ExceptionHandlingCallable<String>( new FailingCallable<String>( new FileNotFoundException( "boo" ) ),
-            new SimpleExceptionHandler( FileNotFoundException.class, EOFException.class ) ) );
+        callables.add( new ExceptionHandlingCallable<String>( new FailingCallable<String>( new FileNotFoundException(
+            "boo" ) ), new SimpleExceptionHandler( FileNotFoundException.class, EOFException.class ) ) );
         callables.add( new SleepingWrapperCallable<String>( 500, new HelloCallableWithExceptionHandler( "Sailor" ) ) );
         callables.add( new SleepingWrapperCallable<String>( 8000, new HelloCallable(
             "Sleepie that will be forgot about" ) ) );
@@ -294,7 +311,8 @@ public class ChargerTest
 
         final long submitted = System.currentTimeMillis();
 
-        ChargeFuture<String> cf = charger.submit( callables, new FirstArrivedChargeStrategy<String>() );
+        ChargeFuture<String> cf =
+            charger.submit( callables, new FirstArrivedChargeStrategy<String>(), executorServiceProvider );
 
         final List<String> result = cf.getResult();
 
@@ -331,8 +349,7 @@ public class ChargerTest
         callables.add( new SleepingWrapperCallable<String>( 1500, new HelloCallableWithExceptionHandler( "Taylor" ) ) );
         callables.add( new SleepingWrapperCallable<String>( 1000, new HelloCallableWithExceptionHandler( "Soldier" ) ) );
         callables.add( new ExceptionHandlingCallable<String>( new FailingCallable<String>( new FileNotFoundException(
-            "boo" ) ), new SimpleExceptionHandler( FileNotFoundException.class,
-            EOFException.class ) ) );
+            "boo" ) ), new SimpleExceptionHandler( FileNotFoundException.class, EOFException.class ) ) );
         callables.add( new SleepingWrapperCallable<String>( 500, new HelloCallableWithExceptionHandler( "Sailor" ) ) );
         callables.add( new SleepingWrapperCallable<String>( 8000, new HelloCallable(
             "Sleepie that will be forgot about" ) ) );
@@ -342,7 +359,8 @@ public class ChargerTest
 
         final long submitted = System.currentTimeMillis();
 
-        ChargeFuture<String> cf = charger.submit( callables, new FirstArrivedChargeStrategy<String>() );
+        ChargeFuture<String> cf =
+            charger.submit( callables, new FirstArrivedChargeStrategy<String>(), executorServiceProvider );
 
         List<String> result;
         try

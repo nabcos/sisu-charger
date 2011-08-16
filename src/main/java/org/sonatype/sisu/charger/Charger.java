@@ -17,9 +17,11 @@ public interface Charger
      * 
      * @param callables
      * @param strategy
+     * @param executorServiceProvider
      * @return
      */
-    <E> ChargeFuture<E> submit( List<Callable<E>> callables, ChargeStrategy<E> strategy );
+    <E> ChargeFuture<E> submit( List<Callable<E>> callables, ChargeStrategy<E> strategy,
+                                CallableExecutor executorServiceProvider );
 
     /**
      * Handy method to quickly assemble and execute a charge of work, sharing one instance (!) of ExceptionHandler, with
@@ -28,21 +30,18 @@ public interface Charger
      * @param callables
      * @param exceptionHandler
      * @param strategy
+     * @param executorServiceProvider
      * @return
      */
     <E> ChargeFuture<E> submit( List<Callable<E>> callables, ExceptionHandler exceptionHandler,
-                                ChargeStrategy<E> strategy );
+                                ChargeStrategy<E> strategy, CallableExecutor executorServiceProvider );
 
     /**
      * If you crufted manually a Charge instance, just toss it here to start it's execution.
      * 
      * @param charge
+     * @param executorServiceProvider
      * @return
      */
-    <E> ChargeFuture<E> submit( Charge<E> charge );
-
-    /**
-     * Shut's down charger internals.
-     */
-    void shutdown();
+    <E> ChargeFuture<E> submit( Charge<E> charge, CallableExecutor executorServiceProvider );
 }
