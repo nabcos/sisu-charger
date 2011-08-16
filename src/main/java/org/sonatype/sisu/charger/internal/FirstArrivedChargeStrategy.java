@@ -52,28 +52,30 @@ public class FirstArrivedChargeStrategy<E>
 
         while ( stillUnfinished )
         {
-            int doneTasks = 0;
-
-            for ( ChargeWrapperFuture<E> f : futures )
+            // lock charge to not miss notify of e.g. first result while we look at a later future
+            synchronized ( charge )
             {
-                if ( f.isDone() )
+                int doneTasks = 0;
+
+                for ( ChargeWrapperFuture<E> f : futures )
                 {
-                    doneTasks++;
-
-                    E e = getFutureResult( f );
-
-                    if ( e != null )
+                    if ( f.isDone() )
                     {
-                        return Collections.singletonList( e );
+                        doneTasks++;
+
+                        E e = getFutureResult( f );
+
+                        if ( e != null )
+                        {
+                            charge.cancel( false );
+                            return Collections.singletonList( e );
+                        }
                     }
                 }
-            }
 
-            stillUnfinished = doneTasks != futures.size();
+                stillUnfinished = doneTasks != futures.size();
 
-            if ( stillUnfinished )
-            {
-                synchronized ( charge )
+                if ( stillUnfinished )
                 {
                     charge.wait();
                 }
