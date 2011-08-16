@@ -10,12 +10,12 @@ import org.sonatype.sisu.charger.ChargeStrategy;
 public abstract class AbstractChargeStrategy<E>
     implements ChargeStrategy<E>
 {
-    protected E getFutureResult( final ChargeWrapperFuture<E> future )
+    protected E getFutureResult( final ChargeWrapper<E> wrapper )
         throws Exception
     {
         try
         {
-            return future.get();
+            return wrapper.getFuture().get();
         }
         catch ( ExecutionException e )
         {
@@ -27,7 +27,7 @@ public abstract class AbstractChargeStrategy<E>
             {
                 final Exception cause = (Exception) e.getCause();
 
-                if ( !future.getChargeWrapper().handle( cause ) )
+                if ( !wrapper.handle( cause ) )
                 {
                     throw cause;
                 }
@@ -52,11 +52,11 @@ public abstract class AbstractChargeStrategy<E>
     protected List<E> getAllResults( final Charge<E> charge )
         throws Exception
     {
-        final List<ChargeWrapperFuture<E>> futures = charge.getAmmoFutures();
+        final List<ChargeWrapper<E>> ammo = charge.getAmmoFutures();
 
-        final ArrayList<E> result = new ArrayList<E>( futures.size() );
+        final ArrayList<E> result = new ArrayList<E>( ammo.size() );
 
-        for ( ChargeWrapperFuture<E> f : futures )
+        for ( ChargeWrapper<E> f : ammo )
         {
             E e = getFutureResult( f );
 
@@ -72,7 +72,7 @@ public abstract class AbstractChargeStrategy<E>
     // ==
 
     @Override
-    public abstract boolean isDone( Charge<E> charge );
+    public abstract boolean isDone( Charge<E> charge, ChargeWrapper<E> wrapper );
 
     @Override
     public abstract List<E> getResult( Charge<E> charge )

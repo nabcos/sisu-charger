@@ -1,6 +1,7 @@
 package org.sonatype.sisu.charger.internal;
 
 import java.util.concurrent.Callable;
+import java.util.concurrent.Future;
 
 import org.sonatype.sisu.charger.ExceptionHandler;
 
@@ -22,12 +23,24 @@ public class ChargeWrapper<E>
 
     private final ExceptionHandler exceptionHandler;
 
+    private Future<E> future;
+
     public ChargeWrapper( final Charge<E> charge, final Callable<? extends E> callable,
                           final ExceptionHandler exceptionHandler )
     {
         this.charge = Preconditions.checkNotNull( charge );
         this.callable = Preconditions.checkNotNull( callable );
         this.exceptionHandler = Preconditions.checkNotNull( exceptionHandler );
+    }
+
+    protected void setFuture( Future<E> future )
+    {
+        this.future = Preconditions.checkNotNull( future );
+    }
+
+    public Future<E> getFuture()
+    {
+        return future;
     }
 
     @Override
@@ -47,11 +60,7 @@ public class ChargeWrapper<E>
         }
         finally
         {
-            synchronized ( charge )
-            {
-                charge.notifyAll();
-            }
-            charge.checkIsDone();
+            charge.checkIsDone( this );
         }
     }
 

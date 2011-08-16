@@ -16,17 +16,17 @@ public class FirstArrivedInOrderChargeStrategy<E>
     extends AbstractChargeStrategy<E>
 {
     @Override
-    public boolean isDone( final Charge<E> charge )
+    public boolean isDone( final Charge<E> charge, final ChargeWrapper<E> wrapper )
     {
-        List<ChargeWrapperFuture<E>> ammoFutures = charge.getAmmoFutures();
+        List<ChargeWrapper<E>> ammoFutures = charge.getAmmoFutures();
 
-        for ( ChargeWrapperFuture<E> f : ammoFutures )
+        for ( ChargeWrapper<E> a : ammoFutures )
         {
-            if ( f.isDone() )
+            if ( a.getFuture().isDone() )
             {
                 try
                 {
-                    if ( getFutureResult( f ) != null )
+                    if ( getFutureResult( a ) != null )
                     {
                         return true;
                     }
@@ -46,9 +46,9 @@ public class FirstArrivedInOrderChargeStrategy<E>
     public List<E> getResult( final Charge<E> charge )
         throws Exception
     {
-        final List<ChargeWrapperFuture<E>> futures = charge.getAmmoFutures();
+        final List<ChargeWrapper<E>> futures = charge.getAmmoFutures();
 
-        for ( ChargeWrapperFuture<E> f : futures )
+        for ( ChargeWrapper<E> f : futures )
         {
             E e = getFutureResult( f );
 

@@ -20,8 +20,6 @@ public class Charge<E>
 {
     private final List<ChargeWrapper<E>> ammunition;
 
-    private final List<ChargeWrapperFuture<E>> ammunitionFutures;
-
     private final ChargeStrategy<E> strategy;
 
     private volatile boolean done;
@@ -31,8 +29,6 @@ public class Charge<E>
         this.strategy = Preconditions.checkNotNull( strategy );
 
         this.ammunition = new ArrayList<ChargeWrapper<E>>();
-
-        this.ammunitionFutures = new ArrayList<ChargeWrapperFuture<E>>();
     }
 
     public void addAmmo( final Callable<? extends E> callable, final ExceptionHandler exceptionHandler )
@@ -40,16 +36,16 @@ public class Charge<E>
         ammunition.add( new ChargeWrapper<E>( this, callable, exceptionHandler ) );
     }
 
-    public List<ChargeWrapperFuture<E>> getAmmoFutures()
+    public List<ChargeWrapper<E>> getAmmoFutures()
     {
-        return ammunitionFutures;
+        return ammunition;
     }
 
     public synchronized void exec( final CallableExecutor runner )
     {
         for ( ChargeWrapper<E> ammo : ammunition )
         {
-            ammunitionFutures.add( new ChargeWrapperFuture<E>( ammo, runner.submit( ammo ) ) );
+            ammo.setFuture( runner.submit( ammo ) );
         }
     }
 
@@ -61,9 +57,9 @@ public class Charge<E>
         }
         else
         {
-            for ( ChargeWrapperFuture<E> future : ammunitionFutures )
+            for ( ChargeWrapper<E> wrapper : ammunition )
             {
-                future.cancel( mayInterruptIfRunning );
+                wrapper.getFuture().cancel( mayInterruptIfRunning );
             }
 
             return true;
@@ -81,9 +77,9 @@ public class Charge<E>
         return strategy.getResult( this );
     }
 
-    public synchronized void checkIsDone()
+    public synchronized void checkIsDone( final ChargeWrapper<E> wrapper )
     {
-        if ( strategy.isDone( this ) )
+        if ( strategy.isDone( this, wrapper ) )
         {
             done = true;
         }

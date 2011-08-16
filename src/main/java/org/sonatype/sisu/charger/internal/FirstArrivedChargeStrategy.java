@@ -2,7 +2,7 @@ package org.sonatype.sisu.charger.internal;
 
 import java.util.Collections;
 import java.util.List;
-
+import java.util.concurrent.CountDownLatch;
 
 /**
  * ChargeStrategy for "first with payload or unhandled exception". This strategy will block as long as first Callable
@@ -15,74 +15,33 @@ import java.util.List;
 public class FirstArrivedChargeStrategy<E>
     extends AbstractChargeStrategy<E>
 {
+    private volatile ChargeWrapper<E> first = null;
+
+    private CountDownLatch firstFound = new CountDownLatch( 1 );
 
     @Override
-    public boolean isDone( final Charge<E> charge )
+    public boolean isDone( final Charge<E> charge, final ChargeWrapper<E> wrapper )
     {
-        List<ChargeWrapperFuture<E>> ammoFutures = charge.getAmmoFutures();
+        first = wrapper;
 
-        for ( ChargeWrapperFuture<E> f : ammoFutures )
-        {
-            if ( f.isDone() )
-            {
-                try
-                {
-                    if ( getFutureResult( f ) != null )
-                    {
-                        return true;
-                    }
-                }
-                catch ( Exception e )
-                {
-                    // nope, not done but failed badly
-                    return true;
-                }
-            }
-        }
+        firstFound.countDown();
 
-        return false;
+        return true;
     }
 
     @Override
     public List<E> getResult( final Charge<E> charge )
         throws Exception
     {
-        final List<ChargeWrapperFuture<E>> futures = charge.getAmmoFutures();
-
-        boolean stillUnfinished = true ;
-
-        while ( stillUnfinished )
+        if ( charge.getAmmoFutures().isEmpty() )
         {
-            // lock charge to not miss notify of e.g. first result while we look at a later future
-            synchronized ( charge )
-            {
-                int doneTasks = 0;
-
-                for ( ChargeWrapperFuture<E> f : futures )
-                {
-                    if ( f.isDone() )
-                    {
-                        doneTasks++;
-
-                        E e = getFutureResult( f );
-
-                        if ( e != null )
-                        {
-                            return Collections.singletonList( e );
-                        }
-                    }
-                }
-
-                stillUnfinished = doneTasks != futures.size();
-
-                if ( stillUnfinished )
-                {
-                    charge.wait();
-                }
-            }
+            return Collections.emptyList();
         }
+        else
+        {
+            firstFound.await();
 
-        // if we are here, all callables have no result or are failed
-        return Collections.emptyList();
+            return Collections.singletonList( getFutureResult( first ) );
+        }
     }
 }

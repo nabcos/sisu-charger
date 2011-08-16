@@ -1,8 +1,6 @@
 package org.sonatype.sisu.charger.internal;
 
 import java.util.List;
-import java.util.concurrent.Future;
-
 
 /**
  * Strategy that will ensure all the payloads are here, are bailed out, or did fail.
@@ -14,14 +12,14 @@ public class AllArrivedChargeStrategy<E>
     extends AbstractChargeStrategy<E>
 {
     @Override
-    public boolean isDone( final Charge<E> charge )
+    public boolean isDone( final Charge<E> charge, final ChargeWrapper<E> wrapper )
     {
         // done if all done, otherwise not
-        List<ChargeWrapperFuture<E>> ammoFutures = charge.getAmmoFutures();
+        List<ChargeWrapper<E>> ammoFutures = charge.getAmmoFutures();
 
-        for ( Future<E> f : ammoFutures )
+        for ( ChargeWrapper<E> a : ammoFutures )
         {
-            if ( !f.isDone() )
+            if ( !a.getFuture().isDone() )
             {
                 return false;
             }
