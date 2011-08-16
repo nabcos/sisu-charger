@@ -47,6 +47,10 @@ public class ChargeWrapper<E>
         }
         finally
         {
+            synchronized ( charge )
+            {
+                charge.notifyAll();
+            }
             charge.checkIsDone();
         }
     }

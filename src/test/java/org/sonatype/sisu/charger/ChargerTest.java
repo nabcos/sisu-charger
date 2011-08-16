@@ -88,7 +88,7 @@ public class ChargerTest
 
         List<Callable<String>> callables = new ArrayList<Callable<String>>();
 
-        ChargeFuture<String> cf = charger.submit( callables, new FirstArrivedInOrderChargeStrategy<String>() );
+        ChargeFuture<String> cf = charger.submit( callables, new FirstArrivedInOrderChargeStrategy<String>(), executorServiceProvider );
 
         final List<String> result = cf.getResult();
 
@@ -412,7 +412,7 @@ public class ChargerTest
 
         final long submitted = System.currentTimeMillis();
 
-        ChargeFuture<String> cf = charger.submit( callables, new FirstArrivedChargeStrategy<String>() );
+        ChargeFuture<String> cf = charger.submit( callables, new FirstArrivedChargeStrategy<String>(), executorServiceProvider );
 
         List<String> result = cf.getResult();
 

@@ -48,16 +48,39 @@ public class FirstArrivedChargeStrategy<E>
     {
         final List<ChargeWrapperFuture<E>> futures = charge.getAmmoFutures();
 
-        for ( ChargeWrapperFuture<E> f : futures )
-        {
-            E e = getFutureResult( f );
+        boolean stillUnfinished = true ;
 
-            if ( e != null )
+        while ( stillUnfinished )
+        {
+            int doneTasks = 0;
+
+            for ( ChargeWrapperFuture<E> f : futures )
             {
-                return Collections.singletonList( e );
+                if ( f.isDone() )
+                {
+                    doneTasks++;
+
+                    E e = getFutureResult( f );
+
+                    if ( e != null )
+                    {
+                        return Collections.singletonList( e );
+                    }
+                }
+            }
+
+            stillUnfinished = doneTasks != futures.size();
+
+            if ( stillUnfinished )
+            {
+                synchronized ( charge )
+                {
+                    charge.wait();
+                }
             }
         }
 
+        // if we are here, all callables have no result or are failed
         return Collections.emptyList();
     }
 }
