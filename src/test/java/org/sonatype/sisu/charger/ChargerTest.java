@@ -17,8 +17,6 @@ import org.sonatype.sisu.charger.internal.AllArrivedChargeStrategy;
 import org.sonatype.sisu.charger.internal.FirstArrivedChargeStrategy;
 import org.sonatype.sisu.charger.internal.FirstArrivedInOrderChargeStrategy;
 
-import junit.framework.Assert;
-
 public class ChargerTest
     extends InjectedTestCase
 {
@@ -45,7 +43,7 @@ public class ChargerTest
 
         final List<String> result = cf.getResult();
 
-        Assert.assertEquals( "We should greet Jason and Brian", result.size(), 2 );
+        MatcherAssert.assertThat( "We should greet Jason and Brian", result.size(), Matchers.equalTo( 2 ) );
     }
 
     @Test
@@ -88,7 +86,8 @@ public class ChargerTest
 
         List<Callable<String>> callables = new ArrayList<Callable<String>>();
 
-        ChargeFuture<String> cf = charger.submit( callables, new FirstArrivedInOrderChargeStrategy<String>(), executorServiceProvider );
+        ChargeFuture<String> cf =
+            charger.submit( callables, new FirstArrivedInOrderChargeStrategy<String>(), executorServiceProvider );
 
         final List<String> result = cf.getResult();
 
@@ -417,7 +416,9 @@ public class ChargerTest
         List<String> result = cf.getResult();
 
         final long runtime = System.currentTimeMillis() - submitted;
-        assertThat(runtime, Matchers.lessThan( 2000L ));
+        assertThat( result, Matchers.hasSize( 1 ) );
+        assertThat( result, Matchers.hasItem( "hello Sneezy" ) );
+        assertThat( runtime, Matchers.lessThan( 1500 ) );
     }
 
     @Test
@@ -433,14 +434,18 @@ public class ChargerTest
 
         final long submitted = System.currentTimeMillis();
 
-        ChargeFuture<String> cf = charger.submit( callables, new FirstArrivedChargeStrategy<String>(), executorServiceProvider );
+        ChargeFuture<String> cf =
+            charger.submit( callables, new FirstArrivedChargeStrategy<String>(), executorServiceProvider );
 
         Thread.sleep( 500 );
 
         List<String> result = cf.getResult();
 
         final long runtime = System.currentTimeMillis() - submitted;
-        assertThat(runtime, Matchers.lessThan( 1000L ));
+
+        assertThat( result, Matchers.hasSize( 1 ) );
+        assertThat( result, Matchers.hasItem( "hello Sneezy" ) );
+        assertThat( runtime, Matchers.lessThan( 1000L ) );
     }
 
 }
