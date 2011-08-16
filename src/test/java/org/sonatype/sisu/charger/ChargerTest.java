@@ -8,6 +8,11 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.Callable;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Future;
+import java.util.concurrent.SynchronousQueue;
+import java.util.concurrent.ThreadPoolExecutor;
+import java.util.concurrent.TimeUnit;
 
 import org.hamcrest.Matchers;
 import org.junit.Test;
@@ -444,4 +449,31 @@ public class ChargerTest
         assertThat( runtime, Matchers.lessThan( 1000L ) );
     }
 
+
+    @Test
+    public void testOverload()
+    {
+        Charger charger = lookup( Charger.class );
+
+        List<Callable<String>> callables = new ArrayList<Callable<String>>();
+        for ( int i = 0; i < 10; i++ )
+        {
+            callables.add( new SleepingWrapperCallable<String>( 8000, new HelloCallable( "Sleepy" ) ) );
+        }
+
+        final long submitted = System.currentTimeMillis();
+
+        ChargeFuture<String> cf =
+            charger.submit( callables, new FirstArrivedChargeStrategy<String>(), new CallableExecutor()
+            {
+                final ExecutorService pool =
+                    new ThreadPoolExecutor( 0, 5, 60L, TimeUnit.SECONDS, new SynchronousQueue<Runnable>());
+                @Override
+                public <T> Future<T> submit( Callable<T> task )
+                {
+                    return pool.submit( task );
+                }
+            } );
+
+    }
 }
