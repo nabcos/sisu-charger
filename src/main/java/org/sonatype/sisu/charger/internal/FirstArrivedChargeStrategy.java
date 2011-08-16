@@ -15,6 +15,7 @@ import java.util.List;
 public class FirstArrivedChargeStrategy<E>
     extends AbstractChargeStrategy<E>
 {
+
     @Override
     public boolean isDone( final Charge<E> charge )
     {
@@ -67,7 +68,6 @@ public class FirstArrivedChargeStrategy<E>
 
                         if ( e != null )
                         {
-                            charge.cancel( false );
                             return Collections.singletonList( e );
                         }
                     }

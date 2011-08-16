@@ -408,7 +408,7 @@ public class ChargerTest
         List<Callable<String>> callables = new ArrayList<Callable<String>>();
         callables.add( new SleepingWrapperCallable<String>( 8000, new HelloCallable("Sleepy") ) );
         callables.add( new SleepingWrapperCallable<String>( 4000, new HelloCallable("Grumpy") ) );
-        callables.add( new SleepingWrapperCallable<String>( 100, new HelloCallable("Sneezy") ) );
+        callables.add( new SleepingWrapperCallable<String>( 1000, new HelloCallable("Sneezy") ) );
 
         final long submitted = System.currentTimeMillis();
 
@@ -417,7 +417,29 @@ public class ChargerTest
         List<String> result = cf.getResult();
 
         final long runtime = System.currentTimeMillis() - submitted;
-        System.err.println( runtime );
+        assertThat(runtime, Matchers.lessThan( 2000L ));
+    }
+
+    @Test
+    public void testFirstArrivedStrategyCallableAlreadyDoneOnFirstCheck()
+        throws Exception
+    {
+        Charger charger = lookup( Charger.class );
+
+        List<Callable<String>> callables = new ArrayList<Callable<String>>();
+        callables.add( new SleepingWrapperCallable<String>( 8000, new HelloCallable("Sleepy") ) );
+        callables.add( new SleepingWrapperCallable<String>( 4000, new HelloCallable("Grumpy") ) );
+        callables.add( new SleepingWrapperCallable<String>( 100, new HelloCallable("Sneezy") ) );
+
+        final long submitted = System.currentTimeMillis();
+
+        ChargeFuture<String> cf = charger.submit( callables, new FirstArrivedChargeStrategy<String>(), executorServiceProvider );
+
+        Thread.sleep( 500 );
+
+        List<String> result = cf.getResult();
+
+        final long runtime = System.currentTimeMillis() - submitted;
         assertThat(runtime, Matchers.lessThan( 1000L ));
     }
 
