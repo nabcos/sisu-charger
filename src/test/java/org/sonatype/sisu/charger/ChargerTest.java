@@ -1,5 +1,7 @@
 package org.sonatype.sisu.charger;
 
+import static org.hamcrest.MatcherAssert.assertThat;
+
 import java.io.EOFException;
 import java.io.FileNotFoundException;
 import java.io.IOException;
@@ -7,13 +9,14 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.Callable;
 
-import junit.framework.Assert;
-
 import org.hamcrest.MatcherAssert;
+import org.hamcrest.Matchers;
 import org.junit.Test;
 import org.sonatype.guice.bean.containers.InjectedTestCase;
 import org.sonatype.sisu.charger.internal.AllArrivedChargeStrategy;
 import org.sonatype.sisu.charger.internal.FirstArrivedChargeStrategy;
+
+import junit.framework.Assert;
 
 public class ChargerTest
     extends InjectedTestCase
@@ -378,6 +381,28 @@ public class ChargerTest
 
         MatcherAssert.assertThat( "We have to finish in less than 4 seconds! We finished in " + ( runtime / 1000 ),
             runtime < 4000 );
+    }
+
+    @Test
+    public void testFirstArrivedStrategyLastCallableSucceedsFirst()
+        throws Exception
+    {
+        Charger charger = lookup( Charger.class );
+
+        List<Callable<String>> callables = new ArrayList<Callable<String>>();
+        callables.add( new SleepingWrapperCallable<String>( 8000, new HelloCallable("Sleepy") ) );
+        callables.add( new SleepingWrapperCallable<String>( 4000, new HelloCallable("Grumpy") ) );
+        callables.add( new SleepingWrapperCallable<String>( 100, new HelloCallable("Sneezy") ) );
+
+        final long submitted = System.currentTimeMillis();
+
+        ChargeFuture<String> cf = charger.submit( callables, new FirstArrivedChargeStrategy<String>() );
+
+        List<String> result = cf.getResult();
+
+        final long runtime = System.currentTimeMillis() - submitted;
+        System.err.println( runtime );
+        assertThat(runtime, Matchers.lessThan( 1000L ));
     }
 
 }
