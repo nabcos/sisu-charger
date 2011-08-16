@@ -9,7 +9,6 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.Callable;
 
-import org.hamcrest.MatcherAssert;
 import org.hamcrest.Matchers;
 import org.junit.Test;
 import org.sonatype.guice.bean.containers.InjectedTestCase;
@@ -43,7 +42,7 @@ public class ChargerTest
 
         final List<String> result = cf.getResult();
 
-        MatcherAssert.assertThat( "We should greet Jason and Brian", result.size(), Matchers.equalTo( 2 ) );
+        assertThat( "We should greet Jason and Brian", result.size(), Matchers.equalTo( 2 ) );
     }
 
     @Test
@@ -59,7 +58,7 @@ public class ChargerTest
 
         final List<String> result = cf.getResult();
 
-        MatcherAssert.assertThat( "We should greet no one", result.size() == 0 );
+        assertThat( "We should greet no one", result.size() == 0 );
     }
 
     @Test
@@ -75,7 +74,7 @@ public class ChargerTest
 
         final List<String> result = cf.getResult();
 
-        MatcherAssert.assertThat( "We should greet no one", result.size() == 0 );
+        assertThat( "We should greet no one", result.size() == 0 );
     }
 
     @Test
@@ -91,7 +90,7 @@ public class ChargerTest
 
         final List<String> result = cf.getResult();
 
-        MatcherAssert.assertThat( "We should greet no one", result.size() == 0 );
+        assertThat( "We should greet no one", result.size() == 0 );
     }
 
     @Test
@@ -112,7 +111,7 @@ public class ChargerTest
 
         final List<String> result = cf.getResult();
 
-        MatcherAssert.assertThat( "We should greet Jason and Brian", result.size() == 2 );
+        assertThat( "We should greet Jason and Brian", result.size() == 2 );
     }
 
     @Test
@@ -135,7 +134,7 @@ public class ChargerTest
         {
             List<String> result = cf.getResult();
 
-            MatcherAssert.assertThat( "We need to get an IOException!", false );
+            assertThat( "We need to get an IOException!", false );
         }
         catch ( IOException e )
         {
@@ -166,14 +165,14 @@ public class ChargerTest
             List<String> result = cf.getResult();
 
             // good, IOException should go unnoticed
-            MatcherAssert.assertThat( "We should greet Jason and Brian", result.size() == 2 );
+            assertThat( "We should greet Jason and Brian", result.size() == 2 );
         }
         catch ( IOException e )
         {
-            MatcherAssert.assertThat( "We must not get an IOException!", false );
+            assertThat( "We must not get an IOException!", false );
         }
 
-        MatcherAssert.assertThat( "Hander should kick in!", simpleExceptionHandler.isKickedIn() );
+        assertThat( "Hander should kick in!", simpleExceptionHandler.isKickedIn() );
     }
 
     @Test
@@ -198,14 +197,14 @@ public class ChargerTest
         {
             List<String> result = cf.getResult();
 
-            MatcherAssert.assertThat( "We need to get an IOException!", false );
+            assertThat( "We need to get an IOException!", false );
         }
         catch ( IOException e )
         {
             // good
         }
 
-        MatcherAssert.assertThat( "Handler should kick in!", simpleExceptionHandler.isKickedIn() );
+        assertThat( "Handler should kick in!", simpleExceptionHandler.isKickedIn() );
     }
 
     @Test
@@ -226,7 +225,7 @@ public class ChargerTest
 
         final List<String> result = cf.getResult();
 
-        MatcherAssert.assertThat( "We expect to greet Tinkler but it was " + result.toString(), result.size() == 1 );
+        assertThat( "We expect to greet Tinkler but it was " + result.toString(), result.size() == 1 );
     }
 
     @Test
@@ -258,9 +257,8 @@ public class ChargerTest
 
         final long runtime = System.currentTimeMillis() - submitted;
 
-        MatcherAssert.assertThat( "We expect to greet Tinkler but it was " + result.toString(), result.size() == 1 );
-        MatcherAssert.assertThat( "We have to finish in less than 3 seconds! We finished in " + ( runtime / 1000 ),
-            runtime < 3000 );
+        assertThat( "We expect to greet Tinkler but it was " + result.toString(), result.size() == 1 );
+        assertThat( "We have to finish in less than 3 seconds! We finished in " + ( runtime / 1000 ), runtime < 3000 );
     }
 
     @Test
@@ -292,9 +290,8 @@ public class ChargerTest
 
         final long runtime = System.currentTimeMillis() - submitted;
 
-        MatcherAssert.assertThat( "We expect to greet all but it was " + result.toString(), result.size() == 5 );
-        MatcherAssert.assertThat( "We have to finish in less than 9 seconds! We finished in " + ( runtime / 1000 ),
-            runtime < 9000 );
+        assertThat( "We expect to greet all but it was " + result.toString(), result.size() == 5 );
+        assertThat( "We have to finish in less than 9 seconds! We finished in " + ( runtime / 1000 ), runtime < 9000 );
     }
 
     @Test
@@ -336,9 +333,8 @@ public class ChargerTest
 
         final long runtime = System.currentTimeMillis() - submitted;
 
-        MatcherAssert.assertThat( "We expect to greet Tinkler but it was " + result.toString(), result.size() == 1 );
-        MatcherAssert.assertThat( "We have to finish in less than 3.5 seconds! We finished in " + ( runtime / 1000 ),
-            runtime < 3500 );
+        assertThat( "We expect to greet Tinkler but it was " + result.toString(), result.size() == 1 );
+        assertThat( "We have to finish in less than 3.5 seconds! We finished in " + ( runtime / 1000 ), runtime < 3500 );
     }
 
     @Test
@@ -385,7 +381,7 @@ public class ChargerTest
         {
             result = cf.getResult();
 
-            MatcherAssert.assertThat( "We expect an unhandled IOException to be thrown", false );
+            assertThat( "We expect an unhandled IOException to be thrown", false );
         }
         catch ( IOException e )
         {
@@ -394,8 +390,7 @@ public class ChargerTest
 
         final long runtime = System.currentTimeMillis() - submitted;
 
-        MatcherAssert.assertThat( "We have to finish in less than 4 seconds! We finished in " + ( runtime / 1000 ),
-            runtime < 4000 );
+        assertThat( "We have to finish in less than 4 seconds! We finished in " + ( runtime / 1000 ), runtime < 4000 );
     }
 
     @Test
@@ -405,13 +400,14 @@ public class ChargerTest
         Charger charger = lookup( Charger.class );
 
         List<Callable<String>> callables = new ArrayList<Callable<String>>();
-        callables.add( new SleepingWrapperCallable<String>( 8000, new HelloCallable("Sleepy") ) );
-        callables.add( new SleepingWrapperCallable<String>( 4000, new HelloCallable("Grumpy") ) );
-        callables.add( new SleepingWrapperCallable<String>( 1000, new HelloCallable("Sneezy") ) );
+        callables.add( new SleepingWrapperCallable<String>( 8000, new HelloCallable( "Sleepy" ) ) );
+        callables.add( new SleepingWrapperCallable<String>( 4000, new HelloCallable( "Grumpy" ) ) );
+        callables.add( new SleepingWrapperCallable<String>( 1000, new HelloCallable( "Sneezy" ) ) );
 
         final long submitted = System.currentTimeMillis();
 
-        ChargeFuture<String> cf = charger.submit( callables, new FirstArrivedChargeStrategy<String>(), executorServiceProvider );
+        ChargeFuture<String> cf =
+            charger.submit( callables, new FirstArrivedChargeStrategy<String>(), executorServiceProvider );
 
         List<String> result = cf.getResult();
 
@@ -428,9 +424,9 @@ public class ChargerTest
         Charger charger = lookup( Charger.class );
 
         List<Callable<String>> callables = new ArrayList<Callable<String>>();
-        callables.add( new SleepingWrapperCallable<String>( 8000, new HelloCallable("Sleepy") ) );
-        callables.add( new SleepingWrapperCallable<String>( 4000, new HelloCallable("Grumpy") ) );
-        callables.add( new SleepingWrapperCallable<String>( 100, new HelloCallable("Sneezy") ) );
+        callables.add( new SleepingWrapperCallable<String>( 8000, new HelloCallable( "Sleepy" ) ) );
+        callables.add( new SleepingWrapperCallable<String>( 4000, new HelloCallable( "Grumpy" ) ) );
+        callables.add( new SleepingWrapperCallable<String>( 100, new HelloCallable( "Sneezy" ) ) );
 
         final long submitted = System.currentTimeMillis();
 
