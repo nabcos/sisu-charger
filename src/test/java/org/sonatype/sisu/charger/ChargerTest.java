@@ -7,10 +7,11 @@ import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.concurrent.ArrayBlockingQueue;
 import java.util.concurrent.Callable;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Future;
-import java.util.concurrent.SynchronousQueue;
+import java.util.concurrent.RejectedExecutionException;
 import java.util.concurrent.ThreadPoolExecutor;
 import java.util.concurrent.TimeUnit;
 
@@ -449,7 +450,6 @@ public class ChargerTest
         assertThat( runtime, Matchers.lessThan( 1000L ) );
     }
 
-
     @Test
     public void testOverload()
     {
@@ -463,17 +463,33 @@ public class ChargerTest
 
         final long submitted = System.currentTimeMillis();
 
-        ChargeFuture<String> cf =
-            charger.submit( callables, new FirstArrivedChargeStrategy<String>(), new CallableExecutor()
-            {
-                final ExecutorService pool =
-                    new ThreadPoolExecutor( 0, 5, 60L, TimeUnit.SECONDS, new SynchronousQueue<Runnable>());
-                @Override
-                public <T> Future<T> submit( Callable<T> task )
+        try
+        {
+            ChargeFuture<String> cf =
+                charger.submit( callables, new FirstArrivedChargeStrategy<String>(), new CallableExecutor()
                 {
-                    return pool.submit( task );
-                }
-            } );
+                    final ExecutorService pool = new ThreadPoolExecutor( 0, 5, 60L, TimeUnit.SECONDS,
+                        new ArrayBlockingQueue<Runnable>( 5 ) );
 
+                    @Override
+                    public <T> Future<T> submit( Callable<T> task )
+                    {
+                        return pool.submit( task );
+                    }
+                } );
+        }
+        catch ( RejectedExecutionException e )
+        {
+            // good, we expected this
+        }
+
+        // Note: as Ben pointed out, the Java's ExecutorService implementations -- depending on their configuration --
+        // will eventually throw RejectedExecutionException when they are full.
+        // IMO, this is fine, and to keep library generic, we should just clearly mark that on Charger interface, since
+        // the interface CallableExecutor is anyway wide open to integrator (of this lib) to put whatever it wants
+        // behind it.
+        // Also, in case of Nexus, there is a clear "fallback" path given for full thread-pool: fallback to "old"
+        // (sequential)
+        // processing!
     }
 }
