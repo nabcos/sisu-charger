@@ -15,6 +15,7 @@ import org.junit.Test;
 import org.sonatype.guice.bean.containers.InjectedTestCase;
 import org.sonatype.sisu.charger.internal.AllArrivedChargeStrategy;
 import org.sonatype.sisu.charger.internal.FirstArrivedChargeStrategy;
+import org.sonatype.sisu.charger.internal.FirstArrivedInOrderChargeStrategy;
 
 import junit.framework.Assert;
 
@@ -73,6 +74,21 @@ public class ChargerTest
 
         ChargeFuture<String> cf =
             charger.submit( callables, new FirstArrivedChargeStrategy<String>(), executorServiceProvider );
+
+        final List<String> result = cf.getResult();
+
+        MatcherAssert.assertThat( "We should greet no one", result.size() == 0 );
+    }
+
+    @Test
+    public void testEmptyFirstArrivedInOrderChargeStrategy()
+        throws Exception
+    {
+        Charger charger = lookup( Charger.class );
+
+        List<Callable<String>> callables = new ArrayList<Callable<String>>();
+
+        ChargeFuture<String> cf = charger.submit( callables, new FirstArrivedInOrderChargeStrategy<String>() );
 
         final List<String> result = cf.getResult();
 
@@ -194,7 +210,7 @@ public class ChargerTest
     }
 
     @Test
-    public void testFirstArrivedStrategyAllFineAndDandy()
+    public void testFirstArrivedInOrderStrategyAllFineAndDandy()
         throws Exception
     {
         Charger charger = lookup( Charger.class );
@@ -207,7 +223,7 @@ public class ChargerTest
         callables.add( new HelloCallableWithExceptionHandler( "Sailor" ) );
 
         ChargeFuture<String> cf =
-            charger.submit( callables, new FirstArrivedChargeStrategy<String>(), executorServiceProvider );
+            charger.submit( callables, new FirstArrivedInOrderChargeStrategy<String>(), executorServiceProvider );
 
         final List<String> result = cf.getResult();
 
@@ -215,7 +231,7 @@ public class ChargerTest
     }
 
     @Test
-    public void testFirstArrivedStrategyAllFineAndDandyButTasksFinishInOppositeOrder()
+    public void testFirstArrivedInOrderStrategyAllFineAndDandyButTasksFinishInOppositeOrder()
         throws Exception
     {
         Charger charger = lookup( Charger.class );
@@ -237,7 +253,7 @@ public class ChargerTest
         final long submitted = System.currentTimeMillis();
 
         ChargeFuture<String> cf =
-            charger.submit( callables, new FirstArrivedChargeStrategy<String>(), executorServiceProvider );
+            charger.submit( callables, new FirstArrivedInOrderChargeStrategy<String>(), executorServiceProvider );
 
         final List<String> result = cf.getResult();
 
@@ -283,7 +299,7 @@ public class ChargerTest
     }
 
     @Test
-    public void testFirstArrivedStrategyAllFineAndDandyButTasksFinishInOppositeOrderWithHandledErrors()
+    public void testFirstArrivedInOrderStrategyAllFineAndDandyButTasksFinishInOppositeOrderWithHandledErrors()
         throws Exception
     {
         Charger charger = lookup( Charger.class );
@@ -315,7 +331,7 @@ public class ChargerTest
         final long submitted = System.currentTimeMillis();
 
         ChargeFuture<String> cf =
-            charger.submit( callables, new FirstArrivedChargeStrategy<String>(), executorServiceProvider );
+            charger.submit( callables, new FirstArrivedInOrderChargeStrategy<String>(), executorServiceProvider );
 
         final List<String> result = cf.getResult();
 
@@ -327,7 +343,7 @@ public class ChargerTest
     }
 
     @Test
-    public void testFirstArrivedStrategyAllFineAndDandyButTasksFinishInOppositeOrderWithNotHandledErrors()
+    public void testFirstArrivedInOrderStrategyAllFineAndDandyButTasksFinishInOppositeOrderWithNotHandledErrors()
         throws Exception
     {
         Charger charger = lookup( Charger.class );
@@ -363,7 +379,7 @@ public class ChargerTest
         final long submitted = System.currentTimeMillis();
 
         ChargeFuture<String> cf =
-            charger.submit( callables, new FirstArrivedChargeStrategy<String>(), executorServiceProvider );
+            charger.submit( callables, new FirstArrivedInOrderChargeStrategy<String>(), executorServiceProvider );
 
         List<String> result;
         try
