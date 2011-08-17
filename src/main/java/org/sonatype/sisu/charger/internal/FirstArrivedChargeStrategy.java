@@ -28,19 +28,18 @@ public class FirstArrivedChargeStrategy
 
         ChargeWrapper<E> wrapper;
 
+        int completed;
+
+        public E result;
+
         private ChargeState()
         {
-            this.latch = new CountDownLatch( 1 );
+            this.completed = 0;
         }
 
-        private ChargeState( ChargeWrapper<E> wrapper )
-        {
-            this.latch = new CountDownLatch( 0 );
-            this.wrapper = wrapper;
-        }
     }
 
-    public <E> void setDone( final Charge<E> charge, final ChargeWrapper<E> wrapper )
+    public synchronized <E> void setDone( final Charge<E> charge, final ChargeWrapper<E> wrapper )
     {
         ChargeState<E> state;
 
@@ -48,11 +47,16 @@ public class FirstArrivedChargeStrategy
         {
             if ( ( state = states.get( charge ) ) == null )
             {
-                states.put( charge, ( state = new ChargeState( wrapper ) ) );
+                states.put( charge, ( state = new ChargeState() ) );
             }
+        }
 
+        // this method is synchronized, so the only contestants for the state lock are this synchronized block and the on in getResult.
+        synchronized ( state )
+        {
             state.wrapper = wrapper;
-            state.latch.countDown();
+            state.completed++;
+            state.notifyAll();
         }
     }
 
@@ -75,9 +79,42 @@ public class FirstArrivedChargeStrategy
                 }
             }
 
-            state.latch.await();
+            // shortcut if we already have a result
+            if ( state.result != null )
+            {
+                return Collections.singletonList( state.result );
+            }
 
-            return Collections.singletonList( getFutureResult( state.wrapper ) );
+            synchronized ( state )
+            {
+                // as long as we have the chance to get a result...
+                do
+                {
+                    // ... wait for new results to arrive and ...
+                    if ( state.wrapper == null )
+                    {
+                        state.wait();
+                    }
+
+                    // ( if we have multiple callers waiting for a result, one will might have set a result before we are running)
+                    if ( state.result == null )
+                    {
+                        state.result = getFutureResult( state.wrapper );
+                    }
+
+                    if ( state.result != null )
+                    {
+                        // ... return result if it was valid
+                        return Collections.singletonList( state.result );
+                    }
+
+                    // result was a handled exception in wrapper, wait for next result (or exit while loop via condition)
+                    state.wrapper = null;
+                }
+                while ( state.completed < charge.getAmmoFutures().size() );
+
+                return Collections.emptyList();
+            }
         }
     }
 

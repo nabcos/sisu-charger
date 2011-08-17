@@ -450,6 +450,7 @@ public class ChargerTest
         assertThat( runtime, Matchers.lessThan( 1000L ) );
     }
 
+
     @Test
     public void testOverload()
     {
@@ -608,5 +609,29 @@ public class ChargerTest
         assertThat( runtime2, Matchers.allOf(Matchers.lessThan( 3000L ), Matchers.greaterThanOrEqualTo( 2000L )) );
         assertThat( result2, Matchers.hasSize( 1 ) );
         assertThat( result2, Matchers.hasItem( "hello Sleepy2" ) );
+    }
+
+    @Test
+    public void testFirstArrivedStrategyCallableAllFail()
+        throws Exception
+    {
+        Charger charger = lookup( Charger.class );
+
+        List<Callable<String>> callables = new ArrayList<Callable<String>>();
+        callables.add( new BailingOutCallable<String>( false ) );
+        callables.add( new BailingOutCallable<String>( false ) );
+
+        final long submitted = System.currentTimeMillis();
+
+        ChargeFuture<String> cf =
+            charger.submit( callables, FirstArrivedChargeStrategy.INSTANCE, executorServiceProvider );
+
+        Thread.sleep( 500 );
+
+        List<String> result = cf.getResult();
+
+        final long runtime = System.currentTimeMillis() - submitted;
+
+        assertThat( result, Matchers.hasSize( 0 ) );
     }
 }
