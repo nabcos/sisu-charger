@@ -44,4 +44,11 @@ public class FirstArrivedChargeStrategy<E>
             return Collections.singletonList( getFutureResult( first ) );
         }
     }
+
+    @Override
+    public boolean isDone( Charge<E> eCharge )
+    {
+        ChargeState state;
+        return ( state = states.get( eCharge ) ) != null && state.wrapper != null;
+    }
 }

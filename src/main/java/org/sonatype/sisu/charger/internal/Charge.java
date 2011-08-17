@@ -79,9 +79,14 @@ public class Charge<E>
 
     public synchronized void checkIsDone( final ChargeWrapper<E> wrapper )
     {
-        if ( strategy.isDone( this, wrapper ) )
+        if ( strategy.isDone( this ) )
         {
             done = true;
         }
+    }
+
+    void setDone( final ChargeWrapper<E> wrapper )
+    {
+        strategy.setDone( this, wrapper );
     }
 }

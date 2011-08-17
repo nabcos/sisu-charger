@@ -60,6 +60,7 @@ public class ChargeWrapper<E>
         }
         finally
         {
+            charge.setDone(this);
             charge.checkIsDone( this );
         }
     }

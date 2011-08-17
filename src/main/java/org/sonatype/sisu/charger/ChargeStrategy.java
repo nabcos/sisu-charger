@@ -13,8 +13,21 @@ import org.sonatype.sisu.charger.internal.ChargeWrapper;
  */
 public interface ChargeStrategy<E>
 {
-    boolean isDone( Charge<E> charge, ChargeWrapper<E> wrapper );
+    /**
+     * Checks whether the given charge is to be considered 'done' for this strategy.
+     */
+    boolean isDone( Charge<E> charge );
 
+    /**
+     * Marks the given wrapper for the given charge as done with execution.
+     */
+    void setDone( Charge<E> charge, ChargeWrapper<E> wrapper );
+
+    /**
+     * Returns the results of the given charge. May block to wait until the charge is done.
+     *
+     * @see #isDone(org.sonatype.sisu.charger.internal.Charge)
+     */
     List<E> getResult( Charge<E> charge )
         throws Exception;
 }

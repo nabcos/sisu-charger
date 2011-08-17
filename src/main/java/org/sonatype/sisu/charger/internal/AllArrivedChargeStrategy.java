@@ -12,7 +12,13 @@ public class AllArrivedChargeStrategy<E>
     extends AbstractChargeStrategy<E>
 {
     @Override
-    public boolean isDone( final Charge<E> charge, final ChargeWrapper<E> wrapper )
+    public void setDone( Charge<E> eCharge, ChargeWrapper<E> eChargeWrapper )
+    {
+        // noop, don't need this
+    }
+
+    @Override
+    public boolean isDone( final Charge<E> charge )
     {
         // done if all done, otherwise not
         List<ChargeWrapper<E>> ammoFutures = charge.getAmmoFutures();

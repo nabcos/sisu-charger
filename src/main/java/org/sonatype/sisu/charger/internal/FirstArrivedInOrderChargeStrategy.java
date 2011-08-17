@@ -16,7 +16,7 @@ public class FirstArrivedInOrderChargeStrategy<E>
     extends AbstractChargeStrategy<E>
 {
     @Override
-    public boolean isDone( final Charge<E> charge, final ChargeWrapper<E> wrapper )
+    public boolean isDone( final Charge<E> charge )
     {
         List<ChargeWrapper<E>> ammoFutures = charge.getAmmoFutures();
 
@@ -59,5 +59,11 @@ public class FirstArrivedInOrderChargeStrategy<E>
         }
 
         return Collections.emptyList();
+    }
+
+    @Override
+    public void setDone( Charge<E> eCharge, ChargeWrapper<E> eChargeWrapper )
+    {
+        // noop, don't need this
     }
 }

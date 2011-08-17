@@ -72,7 +72,10 @@ public abstract class AbstractChargeStrategy<E>
     // ==
 
     @Override
-    public abstract boolean isDone( Charge<E> charge, ChargeWrapper<E> wrapper );
+    public abstract void setDone( Charge<E> charge, ChargeWrapper<E> wrapper );
+
+    @Override
+    public abstract boolean isDone( Charge<E> charge );
 
     @Override
     public abstract List<E> getResult( Charge<E> charge )

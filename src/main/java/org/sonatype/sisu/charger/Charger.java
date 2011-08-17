@@ -41,7 +41,7 @@ public interface Charger
      */
     <E> ChargeFuture<E> submit( List<Callable<E>> callables, ExceptionHandler exceptionHandler,
                                 ChargeStrategy<E> strategy, CallableExecutor executorServiceProvider )
-        throws RejectedExecutionException, NullPointerException;;
+        throws RejectedExecutionException, NullPointerException;
 
     /**
      * If you crufted manually a Charge instance, just toss it here to start it's execution.
@@ -53,5 +53,5 @@ public interface Charger
      * @throws NullPointerException if any of the parameters is null
      */
     <E> ChargeFuture<E> submit( Charge<E> charge, CallableExecutor executorServiceProvider )
-        throws RejectedExecutionException, NullPointerException;;
+        throws RejectedExecutionException, NullPointerException;
 }

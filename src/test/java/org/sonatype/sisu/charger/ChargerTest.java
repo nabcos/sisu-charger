@@ -138,7 +138,7 @@ public class ChargerTest
 
         try
         {
-            List<String> result = cf.getResult();
+            cf.getResult();
 
             assertThat( "We need to get an IOException!", false );
         }
@@ -201,7 +201,7 @@ public class ChargerTest
 
         try
         {
-            List<String> result = cf.getResult();
+            cf.getResult();
 
             assertThat( "We need to get an IOException!", false );
         }
@@ -385,7 +385,7 @@ public class ChargerTest
         List<String> result;
         try
         {
-            result = cf.getResult();
+            cf.getResult();
 
             assertThat( "We expect an unhandled IOException to be thrown", false );
         }
@@ -461,11 +461,8 @@ public class ChargerTest
             callables.add( new SleepingWrapperCallable<String>( 8000, new HelloCallable( "Sleepy" ) ) );
         }
 
-        final long submitted = System.currentTimeMillis();
-
         try
         {
-            ChargeFuture<String> cf =
                 charger.submit( callables, new FirstArrivedChargeStrategy<String>(), new CallableExecutor()
                 {
                     final ExecutorService pool = new ThreadPoolExecutor( 0, 5, 60L, TimeUnit.SECONDS,
