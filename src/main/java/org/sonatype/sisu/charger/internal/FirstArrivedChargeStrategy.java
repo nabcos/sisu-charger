@@ -1,9 +1,9 @@
 package org.sonatype.sisu.charger.internal;
 
 import java.util.Collections;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.WeakHashMap;
 import java.util.concurrent.CountDownLatch;
 
 import org.sonatype.sisu.charger.ChargeStrategy;
@@ -20,7 +20,7 @@ public class FirstArrivedChargeStrategy
 {
     public static final ChargeStrategy INSTANCE = new FirstArrivedChargeStrategy();
 
-    private Map<Charge<?>, ChargeState> states = new HashMap<Charge<?>, ChargeState>( 4 );
+    private Map<Charge<?>, ChargeState> states = new WeakHashMap<Charge<?>, ChargeState>( 4 );
 
     private static class ChargeState<E>
     {
