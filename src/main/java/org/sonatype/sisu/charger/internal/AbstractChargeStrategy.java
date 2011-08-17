@@ -7,10 +7,10 @@ import java.util.concurrent.ExecutionException;
 
 import org.sonatype.sisu.charger.ChargeStrategy;
 
-public abstract class AbstractChargeStrategy<E>
-    implements ChargeStrategy<E>
+public abstract class AbstractChargeStrategy
+    implements ChargeStrategy
 {
-    protected E getFutureResult( final ChargeWrapper<E> wrapper )
+    protected <E> E getFutureResult( final ChargeWrapper<E> wrapper )
         throws Exception
     {
         try
@@ -49,7 +49,7 @@ public abstract class AbstractChargeStrategy<E>
         return null;
     }
 
-    protected List<E> getAllResults( final Charge<E> charge )
+    protected <E> List<E> getAllResults( final Charge<E> charge )
         throws Exception
     {
         final List<ChargeWrapper<E>> ammo = charge.getAmmoFutures();
@@ -70,15 +70,4 @@ public abstract class AbstractChargeStrategy<E>
     }
 
     // ==
-
-    @Override
-    public abstract void setDone( Charge<E> charge, ChargeWrapper<E> wrapper );
-
-    @Override
-    public abstract boolean isDone( Charge<E> charge );
-
-    @Override
-    public abstract List<E> getResult( Charge<E> charge )
-        throws Exception;
-
 }

@@ -14,7 +14,7 @@ public class DefaultShiroAwareCharger
     extends DefaultCharger
 {
     @Override
-    protected <E> Charge<E> getChargeInstance( final ChargeStrategy<E> strategy )
+    protected <E> Charge<E> getChargeInstance( final ChargeStrategy strategy )
     {
         return new ShiroAwareCharge<E>( strategy, SecurityUtils.getSubject() );
     }

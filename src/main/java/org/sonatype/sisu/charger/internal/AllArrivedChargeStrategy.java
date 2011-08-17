@@ -2,23 +2,26 @@ package org.sonatype.sisu.charger.internal;
 
 import java.util.List;
 
+import org.sonatype.sisu.charger.ChargeStrategy;
+
 /**
  * Strategy that will ensure all the payloads are here, are bailed out, or did fail.
  * 
  * @author cstamas
- * @param <E>
  */
-public class AllArrivedChargeStrategy<E>
-    extends AbstractChargeStrategy<E>
+public class AllArrivedChargeStrategy
+    extends AbstractChargeStrategy
 {
+    public static final ChargeStrategy INSTANCE = new AllArrivedChargeStrategy();
+
     @Override
-    public void setDone( Charge<E> eCharge, ChargeWrapper<E> eChargeWrapper )
+    public <E> void setDone( Charge<E> eCharge, ChargeWrapper<E> eChargeWrapper )
     {
         // noop, don't need this
     }
 
     @Override
-    public boolean isDone( final Charge<E> charge )
+    public <E> boolean isDone( final Charge<E> charge )
     {
         // done if all done, otherwise not
         List<ChargeWrapper<E>> ammoFutures = charge.getAmmoFutures();
@@ -35,7 +38,7 @@ public class AllArrivedChargeStrategy<E>
     }
 
     @Override
-    public List<E> getResult( final Charge<E> charge )
+    public <E> List<E> getResult( final Charge<E> charge )
         throws Exception
     {
         return getAllResults( charge );

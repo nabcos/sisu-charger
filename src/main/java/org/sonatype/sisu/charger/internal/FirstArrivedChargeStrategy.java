@@ -6,17 +6,20 @@ import java.util.List;
 import java.util.Map;
 import java.util.concurrent.CountDownLatch;
 
+import org.sonatype.sisu.charger.ChargeStrategy;
+
 /**
  * ChargeStrategy for "first with payload or unhandled exception". This strategy will block as long as first Callable
  * delivers some payload or fails with unhandled exception -- making whole Charge to fail. In case of "bail out", the
  * next Callable is processed in same way, as long as there are Callables.
  *
- * @param <E>
  * @author cstamas
  */
-public class FirstArrivedChargeStrategy<E>
-    extends AbstractChargeStrategy<E>
+public class FirstArrivedChargeStrategy
+    extends AbstractChargeStrategy
 {
+    public static final ChargeStrategy INSTANCE = new FirstArrivedChargeStrategy();
+
     private Map<Charge<?>, ChargeState> states = new HashMap<Charge<?>, ChargeState>( 4 );
 
     private static class ChargeState<E>
@@ -37,8 +40,7 @@ public class FirstArrivedChargeStrategy<E>
         }
     }
 
-    @Override
-    public void setDone( final Charge<E> charge, final ChargeWrapper<E> wrapper )
+    public <E> void setDone( final Charge<E> charge, final ChargeWrapper<E> wrapper )
     {
         ChargeState<E> state;
 
@@ -54,8 +56,7 @@ public class FirstArrivedChargeStrategy<E>
         }
     }
 
-    @Override
-    public List<E> getResult( final Charge<E> charge )
+    public <E> List<E> getResult( final Charge<E> charge )
         throws Exception
     {
         if ( charge.getAmmoFutures().isEmpty() )
@@ -80,8 +81,7 @@ public class FirstArrivedChargeStrategy<E>
         }
     }
 
-    @Override
-    public boolean isDone( Charge<E> eCharge )
+    public <E> boolean isDone( Charge<E> eCharge )
     {
         ChargeState state;
         return ( state = states.get( eCharge ) ) != null && state.wrapper != null;

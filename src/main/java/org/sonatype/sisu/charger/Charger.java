@@ -23,7 +23,7 @@ public interface Charger
      * @throws RejectedExecutionException if the task cannot be scheduled for execution
      * @throws NullPointerException if any of the parameters is null
      */
-    <E> ChargeFuture<E> submit( List<Callable<E>> callables, ChargeStrategy<E> strategy,
+    <E> ChargeFuture<E> submit( List<Callable<E>> callables, ChargeStrategy strategy,
                                 CallableExecutor executorServiceProvider )
         throws RejectedExecutionException, NullPointerException;
 
@@ -40,7 +40,7 @@ public interface Charger
      * @throws NullPointerException if any of the parameters is null
      */
     <E> ChargeFuture<E> submit( List<Callable<E>> callables, ExceptionHandler exceptionHandler,
-                                ChargeStrategy<E> strategy, CallableExecutor executorServiceProvider )
+                                ChargeStrategy strategy, CallableExecutor executorServiceProvider )
         throws RejectedExecutionException, NullPointerException;
 
     /**

@@ -19,7 +19,7 @@ import com.google.common.base.Preconditions;
 public class DefaultCharger
     implements Charger
 {
-    public <E> ChargeFuture<E> submit( final List<Callable<E>> callables, final ChargeStrategy<E> strategy,
+    public <E> ChargeFuture<E> submit( final List<Callable<E>> callables, final ChargeStrategy strategy,
                                        final CallableExecutor executorServiceProvider )
     {
         Preconditions.checkNotNull( callables );
@@ -36,7 +36,7 @@ public class DefaultCharger
     }
 
     public <E> ChargeFuture<E> submit( final List<Callable<E>> callables, final ExceptionHandler exceptionHandler,
-                                       final ChargeStrategy<E> strategy,
+                                       final ChargeStrategy strategy,
                                        final CallableExecutor executorServiceProvider )
     {
         Preconditions.checkNotNull( callables );
@@ -62,7 +62,7 @@ public class DefaultCharger
 
     // ==
 
-    protected <E> Charge<E> getChargeInstance( final ChargeStrategy<E> strategy )
+    protected <E> Charge<E> getChargeInstance( final ChargeStrategy strategy )
     {
         return new Charge<E>( strategy );
     }

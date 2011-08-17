@@ -20,11 +20,11 @@ public class Charge<E>
 {
     private final List<ChargeWrapper<E>> ammunition;
 
-    private final ChargeStrategy<E> strategy;
+    private final ChargeStrategy strategy;
 
     private volatile boolean done;
 
-    public Charge( final ChargeStrategy<E> strategy )
+    public Charge( final ChargeStrategy strategy )
     {
         this.strategy = Preconditions.checkNotNull( strategy );
 

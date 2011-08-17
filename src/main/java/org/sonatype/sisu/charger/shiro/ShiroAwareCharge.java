@@ -18,7 +18,7 @@ public class ShiroAwareCharge<E>
 {
     private final Subject subject;
 
-    public ShiroAwareCharge( final ChargeStrategy<E> strategy, final Subject subject )
+    public ShiroAwareCharge( final ChargeStrategy strategy, final Subject subject )
     {
         super( strategy );
 

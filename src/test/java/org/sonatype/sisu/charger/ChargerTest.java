@@ -44,7 +44,7 @@ public class ChargerTest
         callables.add( new HelloCallableWithExceptionHandler( "Brian" ) );
 
         ChargeFuture<String> cf =
-            charger.submit( callables, new AllArrivedChargeStrategy<String>(), executorServiceProvider );
+            charger.submit( callables, AllArrivedChargeStrategy.INSTANCE, executorServiceProvider );
 
         final List<String> result = cf.getResult();
 
@@ -60,7 +60,7 @@ public class ChargerTest
         List<Callable<String>> callables = new ArrayList<Callable<String>>();
 
         ChargeFuture<String> cf =
-            charger.submit( callables, new AllArrivedChargeStrategy<String>(), executorServiceProvider );
+            charger.submit( callables, AllArrivedChargeStrategy.INSTANCE, executorServiceProvider );
 
         final List<String> result = cf.getResult();
 
@@ -76,7 +76,7 @@ public class ChargerTest
         List<Callable<String>> callables = new ArrayList<Callable<String>>();
 
         ChargeFuture<String> cf =
-            charger.submit( callables, new FirstArrivedChargeStrategy<String>(), executorServiceProvider );
+            charger.submit( callables, FirstArrivedChargeStrategy.INSTANCE, executorServiceProvider );
 
         final List<String> result = cf.getResult();
 
@@ -92,7 +92,7 @@ public class ChargerTest
         List<Callable<String>> callables = new ArrayList<Callable<String>>();
 
         ChargeFuture<String> cf =
-            charger.submit( callables, new FirstArrivedInOrderChargeStrategy<String>(), executorServiceProvider );
+            charger.submit( callables, FirstArrivedInOrderChargeStrategy.INSTANCE, executorServiceProvider );
 
         final List<String> result = cf.getResult();
 
@@ -113,7 +113,7 @@ public class ChargerTest
         callables.add( new HelloCallableWithExceptionHandler( "Brian" ) );
 
         ChargeFuture<String> cf =
-            charger.submit( callables, new AllArrivedChargeStrategy<String>(), executorServiceProvider );
+            charger.submit( callables, AllArrivedChargeStrategy.INSTANCE, executorServiceProvider );
 
         final List<String> result = cf.getResult();
 
@@ -134,7 +134,7 @@ public class ChargerTest
         callables.add( new HelloCallableWithExceptionHandler( "Brian" ) );
 
         ChargeFuture<String> cf =
-            charger.submit( callables, new AllArrivedChargeStrategy<String>(), executorServiceProvider );
+            charger.submit( callables, AllArrivedChargeStrategy.INSTANCE, executorServiceProvider );
 
         try
         {
@@ -164,7 +164,7 @@ public class ChargerTest
         callables.add( new HelloCallableWithExceptionHandler( "Brian" ) );
 
         ChargeFuture<String> cf =
-            charger.submit( callables, new AllArrivedChargeStrategy<String>(), executorServiceProvider );
+            charger.submit( callables, AllArrivedChargeStrategy.INSTANCE, executorServiceProvider );
 
         try
         {
@@ -197,7 +197,7 @@ public class ChargerTest
         callables.add( new HelloCallableWithExceptionHandler( "Brian" ) );
 
         ChargeFuture<String> cf =
-            charger.submit( callables, new AllArrivedChargeStrategy<String>(), executorServiceProvider );
+            charger.submit( callables, AllArrivedChargeStrategy.INSTANCE, executorServiceProvider );
 
         try
         {
@@ -227,7 +227,7 @@ public class ChargerTest
         callables.add( new HelloCallableWithExceptionHandler( "Sailor" ) );
 
         ChargeFuture<String> cf =
-            charger.submit( callables, new FirstArrivedInOrderChargeStrategy<String>(), executorServiceProvider );
+            charger.submit( callables, FirstArrivedInOrderChargeStrategy.INSTANCE, executorServiceProvider );
 
         final List<String> result = cf.getResult();
 
@@ -257,7 +257,7 @@ public class ChargerTest
         final long submitted = System.currentTimeMillis();
 
         ChargeFuture<String> cf =
-            charger.submit( callables, new FirstArrivedInOrderChargeStrategy<String>(), executorServiceProvider );
+            charger.submit( callables, FirstArrivedInOrderChargeStrategy.INSTANCE, executorServiceProvider );
 
         final List<String> result = cf.getResult();
 
@@ -290,7 +290,7 @@ public class ChargerTest
         final long submitted = System.currentTimeMillis();
 
         ChargeFuture<String> cf =
-            charger.submit( callables, new AllArrivedChargeStrategy<String>(), executorServiceProvider );
+            charger.submit( callables, AllArrivedChargeStrategy.INSTANCE, executorServiceProvider );
 
         final List<String> result = cf.getResult();
 
@@ -333,7 +333,7 @@ public class ChargerTest
         final long submitted = System.currentTimeMillis();
 
         ChargeFuture<String> cf =
-            charger.submit( callables, new FirstArrivedInOrderChargeStrategy<String>(), executorServiceProvider );
+            charger.submit( callables, FirstArrivedInOrderChargeStrategy.INSTANCE, executorServiceProvider );
 
         final List<String> result = cf.getResult();
 
@@ -380,7 +380,7 @@ public class ChargerTest
         final long submitted = System.currentTimeMillis();
 
         ChargeFuture<String> cf =
-            charger.submit( callables, new FirstArrivedInOrderChargeStrategy<String>(), executorServiceProvider );
+            charger.submit( callables, FirstArrivedInOrderChargeStrategy.INSTANCE, executorServiceProvider );
 
         List<String> result;
         try
@@ -413,7 +413,7 @@ public class ChargerTest
         final long submitted = System.currentTimeMillis();
 
         ChargeFuture<String> cf =
-            charger.submit( callables, new FirstArrivedChargeStrategy<String>(), executorServiceProvider );
+            charger.submit( callables, FirstArrivedChargeStrategy.INSTANCE, executorServiceProvider );
 
         List<String> result = cf.getResult();
 
@@ -437,7 +437,7 @@ public class ChargerTest
         final long submitted = System.currentTimeMillis();
 
         ChargeFuture<String> cf =
-            charger.submit( callables, new FirstArrivedChargeStrategy<String>(), executorServiceProvider );
+            charger.submit( callables, FirstArrivedChargeStrategy.INSTANCE, executorServiceProvider );
 
         Thread.sleep( 500 );
 
@@ -463,7 +463,7 @@ public class ChargerTest
 
         try
         {
-                charger.submit( callables, new FirstArrivedChargeStrategy<String>(), new CallableExecutor()
+                charger.submit( callables, FirstArrivedChargeStrategy.INSTANCE, new CallableExecutor()
                 {
                     final ExecutorService pool = new ThreadPoolExecutor( 0, 5, 60L, TimeUnit.SECONDS,
                         new ArrayBlockingQueue<Runnable>( 5 ) );
@@ -486,7 +486,127 @@ public class ChargerTest
         // the interface CallableExecutor is anyway wide open to integrator (of this lib) to put whatever it wants
         // behind it.
         // Also, in case of Nexus, there is a clear "fallback" path given for full thread-pool: fallback to "old"
-        // (sequential)
-        // processing!
+        // (sequential) processing!
+    }
+
+    @Test
+    public void testMultipleChargesFirstArrived()
+        throws Exception
+    {
+        Charger charger = lookup( Charger.class );
+
+        List<Callable<String>> callables = new ArrayList<Callable<String>>();
+        callables.add( new SleepingWrapperCallable<String>( 8000, new HelloCallable( "Sleepy" ) ) );
+        callables.add( new SleepingWrapperCallable<String>( 4000, new HelloCallable( "Grumpy" ) ) );
+        callables.add( new SleepingWrapperCallable<String>( 100, new HelloCallable( "Sneezy" ) ) );
+
+        List<Callable<String>> callables2 = new ArrayList<Callable<String>>();
+        callables2.add( new SleepingWrapperCallable<String>( 8000, new HelloCallable( "Sleepy" ) ) );
+        callables2.add( new SleepingWrapperCallable<String>( 4000, new HelloCallable( "Grumpy" ) ) );
+        callables2.add( new SleepingWrapperCallable<String>( 2000, new HelloCallable( "Sneezy2" ) ) );
+        final long submitted = System.currentTimeMillis();
+
+        ChargeFuture<String> cf =
+            charger.submit( callables, FirstArrivedChargeStrategy.INSTANCE, executorServiceProvider );
+        ChargeFuture<String> cf2 =
+            charger.submit( callables2, FirstArrivedChargeStrategy.INSTANCE, executorServiceProvider );
+
+
+        Thread.sleep( 500 );
+
+        List<String> result = cf.getResult();
+        final long runtime = System.currentTimeMillis() - submitted;
+
+        List<String> result2 = cf2.getResult();
+        final long runtime2 = System.currentTimeMillis() - submitted;
+
+        assertThat( runtime, Matchers.lessThan( 1000L ) );
+        assertThat( result, Matchers.hasSize( 1 ) );
+        assertThat( result, Matchers.hasItem( "hello Sneezy" ) );
+
+        assertThat( runtime2, Matchers.allOf(Matchers.lessThan( 3000L ), Matchers.greaterThanOrEqualTo( 2000L )) );
+        assertThat( result2, Matchers.hasSize( 1 ) );
+        assertThat( result2, Matchers.hasItem( "hello Sneezy2" ) );
+
+    }
+
+    @Test
+    public void testMultipleChargesAllArrived()
+        throws Exception
+    {
+        Charger charger = lookup( Charger.class );
+
+        List<Callable<String>> callables = new ArrayList<Callable<String>>();
+        callables.add( new SleepingWrapperCallable<String>( 800, new HelloCallable( "Sleepy" ) ) );
+        callables.add( new SleepingWrapperCallable<String>( 150, new HelloCallable( "Grumpy" ) ) );
+        callables.add( new SleepingWrapperCallable<String>( 100, new HelloCallable( "Sneezy" ) ) );
+
+        List<Callable<String>> callables2 = new ArrayList<Callable<String>>();
+        callables2.add( new SleepingWrapperCallable<String>( 2000, new HelloCallable( "Sleepy" ) ) );
+        callables2.add( new SleepingWrapperCallable<String>( 1500, new HelloCallable( "Grumpy" ) ) );
+        callables2.add( new SleepingWrapperCallable<String>( 1000, new HelloCallable( "Sneezy2" ) ) );
+        final long submitted = System.currentTimeMillis();
+
+        ChargeFuture<String> cf =
+            charger.submit( callables, AllArrivedChargeStrategy.INSTANCE, executorServiceProvider );
+        ChargeFuture<String> cf2 =
+            charger.submit( callables2, AllArrivedChargeStrategy.INSTANCE, executorServiceProvider );
+
+
+        Thread.sleep( 500 );
+
+        List<String> result = cf.getResult();
+        final long runtime = System.currentTimeMillis() - submitted;
+
+        List<String> result2 = cf2.getResult();
+        final long runtime2 = System.currentTimeMillis() - submitted;
+
+        assertThat( runtime, Matchers.lessThan( 1200L ) );
+        assertThat( result, Matchers.hasSize( 3 ) );
+        assertThat( result, Matchers.hasItem( "hello Sneezy" ) );
+
+        assertThat( runtime2, Matchers.allOf(Matchers.lessThan( 3000L ), Matchers.greaterThanOrEqualTo( 2000L )) );
+        assertThat( result2, Matchers.hasSize( 3 ) );
+        assertThat( result2, Matchers.hasItem( "hello Sneezy2" ) );
+    }
+
+    @Test
+    public void testMultipleChargesFirstArrivedInOrder()
+        throws Exception
+    {
+        Charger charger = lookup( Charger.class );
+
+        List<Callable<String>> callables = new ArrayList<Callable<String>>();
+        callables.add( new SleepingWrapperCallable<String>( 800, new HelloCallable( "Sleepy" ) ) );
+        callables.add( new SleepingWrapperCallable<String>( 150, new HelloCallable( "Grumpy" ) ) );
+        callables.add( new SleepingWrapperCallable<String>( 100, new HelloCallable( "Sneezy" ) ) );
+
+        List<Callable<String>> callables2 = new ArrayList<Callable<String>>();
+        callables2.add( new SleepingWrapperCallable<String>( 2000, new HelloCallable( "Sleepy2" ) ) );
+        callables2.add( new SleepingWrapperCallable<String>( 1500, new HelloCallable( "Grumpy" ) ) );
+        callables2.add( new SleepingWrapperCallable<String>( 1000, new HelloCallable( "Sneezy2" ) ) );
+        final long submitted = System.currentTimeMillis();
+
+        ChargeFuture<String> cf =
+            charger.submit( callables, FirstArrivedInOrderChargeStrategy.INSTANCE, executorServiceProvider );
+        ChargeFuture<String> cf2 =
+            charger.submit( callables2, FirstArrivedInOrderChargeStrategy.INSTANCE, executorServiceProvider );
+
+
+        Thread.sleep( 500 );
+
+        List<String> result = cf.getResult();
+        final long runtime = System.currentTimeMillis() - submitted;
+
+        List<String> result2 = cf2.getResult();
+        final long runtime2 = System.currentTimeMillis() - submitted;
+
+        assertThat( runtime, Matchers.lessThan( 1200L ) );
+        assertThat( result, Matchers.hasSize( 1 ) );
+        assertThat( result, Matchers.hasItem( "hello Sleepy" ) );
+
+        assertThat( runtime2, Matchers.allOf(Matchers.lessThan( 3000L ), Matchers.greaterThanOrEqualTo( 2000L )) );
+        assertThat( result2, Matchers.hasSize( 1 ) );
+        assertThat( result2, Matchers.hasItem( "hello Sleepy2" ) );
     }
 }
